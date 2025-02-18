@@ -13,61 +13,329 @@
 %% work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 %% -----------------------------------------------------------------------
 
-\section{学术论文排版}
-\subsection{\LaTeX{} 排版入门}
+\section{动态规划分题型讲解}
+\subsection{基本理论概括}
 
 \begin{frame}[fragile]
-  \frametitle{引擎与格式}
+  \frametitle{一些简单的思想概括}
   \begin{itemize}
-    \item \textbf{引擎}：\TeX{} 的实现
+    \item 记忆化搜索与\lstinline{@cache}装饰器
 
           \begin{itemize}
-            \item \pdfTeX{}：直接生成 PDF，支持 micro-typography
-            \item \XeTeX{}：支持 Unicode、OpenType 与复杂文字编排（CTL）
-            \item \LuaTeX{}：支持 Unicode，内联 Lua，支持 OpenType
-            \item (u)p\TeX{}：日本方面推动，生成 \verb|.dvi|，（支持 Unicode）
-            \item Ap\TeX{}：底层 CJK 支持，内联 Ruby，Color Emoji
+            \item 记忆化搜索相对于递推来说，实现逻辑更加简单，但是有时候只有写成递推形式才能结合数据结构优化时间复杂度
+            \item 但是大部分时候记忆化搜索是动态规划题目的神兵利器
           \end{itemize}
 
-    \item \textbf{格式}：\TeX{} 的语言扩展（命令封装）
+    \item \textbf{动态规划类型划分}：动态规划题型多样，每一种都有相对应的解法
 
           \begin{itemize}
-            \item plain \TeX{}：Knuth 同志专用
-            \item \LaTeX{}：排版科技类文章的事实标准
-            \item Con\TeX t：基于 \LuaTeX{} 实现，优雅、易用（吗？）
-          \end{itemize}
-
-    \item \textbf{程序}：引擎 + dump 后的格式代码
-
-          \begin{itemize}
-            \item \alert{英文文章：\pdfLaTeX{}、\XeLaTeX{} 或 \LuaLaTeX{}}
-            \item \alert{中文文章：\XeLaTeX{} 或 \LuaLaTeX{}}
+            \item 网格图\textsc{DP}
+            \item 背包\textsc{DP}
+            \item 线性\textsc{DP}
+            \item 状态机\textsc{DP}
+            \item 划分型\textsc{DP}
+            \item 其他线性\textsc{DP}
+            \item 区间\textsc{DP}
+            \item 状态压缩\textsc{DP}
+            \item 数据结构优化\textsc{DP}
+            \item 树形\textsc{DP}
           \end{itemize}
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{编译}
+\subsubsection{背包\textsc{DP}}
+
+\begin{frame}{0-1背包的思想和公式}
+  \begin{alertblock}{核心思想是“选与不选”两个问题}
+    \begin{equation*}
+      dp(i,target)=\max(dp(i-1,target),dp(i-1,target-weight[i])+value[i])
+    \end{equation*}
+  \end{alertblock}
   \begin{itemize}
-    \item 现代 \TeX{} 引擎均可直接生成 PDF
-    \item 命令行
-
-          \begin{itemize}
-            \item \verb|pdflatex|/\verb|xelatex|/
-                  \verb|lualatex| + \verb|<文件名>[.tex]|
-            \item 多次编译：每次均需要读取并处理中间文件
-            \item 推荐 \pkg{latexmk}\footnote{\MiKTeX 用户需要自行安装 perl 解释器}：运行
-                  \verb|latexmk [<选项>] <文件名>| 即可自动完成所有工作
-          \end{itemize}
-
-    \item 编辑器
-
-          \begin{itemize}
-            \item 按钮的背后仍然是命令
-            \item \verb|PATH| 环境变量：确定可执行文件的位置
-            \item VS Code + \LaTeX{} Workshop：配置 \verb|tools| 和 \verb|recipes|
-          \end{itemize}
+    \item \textbf{基本问题}：有一系列重量为$weight$，价值为$value$的物品，背包容量为$target$，求最大价值
+    \item  用$dp(i,target)$表示：\textsc{到第$i$个物品，背包容量为$target$时的最大价值}
+           \begin{itemize}
+            \item 不选当前物品：$dp(i, target)=dp(i-1,target)$
+            \item 选当前物品：$dp(i, target)=dp(i-1,target-weight[i])+value[i]$
+           \end{itemize}
+    \item  合起来就是$dp(i,target)=\max(dp(i-1,target),dp(i-1,target-weight[i])+value[i])$
+    \item 在自己实现的时候最好用记忆化搜索和递推两种方法都实现一遍    
   \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{举个栗子：416. 分割等和子集\link{https://leetcode.cn/problems/partition-equal-subset-sum/}}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{itemize}
+    \item 定义$dp(i,target)$为从0到前$i$个物品中选，\textbf{是否}能选出和\textbf{恰好为$target$}(\lstinline{return True/False})
+    \item 对于第$i$个物品，要么选要么不选
+        \begin{itemize}
+          \item 如果不选：$dp(i,target)=dp(i-1,target)$
+          \item 如果选了，那么$dp(i,target)=dp(i-1,target-nums[i])$
+        \end{itemize}
+    \item 合起来就是$dp(i,target)=dp(i-1,target) | dp(i-1,target-nums[i])$
+    \item 想ac一道dp题，那么肯定是需要考虑好边界条件的。递推的入口是哪里呢？  
+         \begin{itemize}
+          \item 没有物品可以选，也就是$i<0$或者$i==n$。此时$target==0$的时候才能\lstinline{return True}，不然没东西选必然凑不出一些物品，让这些物品的和为$target$。
+          \item 所以可以写成：\lstinline{if i < 0: return True if target == 0 else False}，或者\lstinline{if i == n: return True if target == 0 else False}，看你喜欢哪种了
+         \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{说了这么多看看代码怎么写吧！我们新上手建议采用两种方式都实现一下}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+def canPartition(self, nums: List[int]) -> bool:
+  @cache
+  def dfs(i: int, target: int) -> bool:
+      if i < 0:
+          return True if target == 0 else False
+      ans = dfs(i - 1, target)
+      if target >= nums[i]:
+          ans = ans | dfs(i - 1, target - nums[i])
+      return ans
+  s = sum(nums)
+
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+  if s & 1 == 1:
+  return False
+
+  ans = dfs(len(nums) - 1, s // 2)
+  dfs.cache_clear()
+  return ans
+
+  \end{codeblock}
+  或者这样
+  \begin{codeblock}[language=python]{}
+class Solution:
+  def canPartition(self, nums: List[int]) -> bool:
+    @cache
+    def dfs(i: int, target: int) -> bool:
+        if i == len(nums):
+            return True if target == 0 else False
+        ans = dfs(i + 1, target)
+        if target >= nums[i]:
+            ans = ans | dfs(i + 1, target - nums[i])
+        return ans
+    \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+    s = sum(nums)
+    if s & 1 == 1:
+        return False
+    
+    ans = dfs(0, s // 2)
+    dfs.cache_clear()
+    return ans
+
+  \end{codeblock}
+  1：1翻译成递推
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        s = sum(nums)
+        if s % 2 == 1:
+            return False
+        s //= 2
+        n = len(nums)
+        dp = [[False] * (s + 1) for _ in range(n + 1)]
+        dp[0][0] = True
+ 
+    \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+    for i, num in enumerate(nums):
+    for target in range(s + 1):
+        dp[i + 1][target] = target >= num and dp[i][target - num] or dp[i][target]
+    return dp[n][s]
+
+  \end{codeblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{2915. 和为目标值的最长子序列的长度}\link{https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{核心思想依然是“选与不选”}
+    \begin{equation*}
+      dp(i,target)=\max(dp(i-1,target),dp(i-1,target-nums[i])+1)
+    \end{equation*}
+  \end{alertblock}
+  \begin{itemize}
+    \item $dp(i,target)=dp(i-1,target)$老样子，代表不选
+    \item $dp(i,target)=dp(i-1,target - nums[i]) + 1$。你既然不选，那么\textbf{长度不变}依然继承$dp(i-1,target)$；如果你选了那么长度肯定++咯
+    \item 合起来，那么$dp(i,target)=\max(dp(i-1,target),dp(i-1,target-nums[i])+1)$
+    \item 注意边界条件。如果没有东西可以选，我们还希望和为$target$，那么只有$target=0$的时候才有意义，让长度为0。否则不可能做到，长度必为$-\infty$
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        @cache
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 0 if target == 0 else -inf
+            ans = dfs(i - 1, target)
+            if target >= nums[i]:
+                ans = max(ans, dfs(i - 1, target - nums[i]) + 1)
+            return ans
+        ans = dfs(len(nums) - 1, target)
+        dfs.cache_clear()
+        return ans if ans != -inf else -1
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{1：1翻译成递推}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        dp = [[-inf] * (target + 1) for _ in range(n + 1)]
+        dp[0][0] = 0
+        for i, num in enumerate(nums):
+            for j in range(target + 1):
+                dp[i + 1][j] = dp[i][j]
+                if j >= nums[i]:
+                    dp[i + 1][j] = max(dp[i][j], dp[i][j - nums[i]] + 1)
+        ans = dp[n][target]
+        return ans if ans != -inf else -1
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{因为$dp[i+1][j]$是从$dp[i][j]$推导出来的，我们优化掉$i$这个维度}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        dp = [0] + [-inf] * target
+        for num in nums:
+            for j in range(target, num - 1, -1):
+                if dp[j - num] + 1 > dp[j]:
+                    dp[j] = dp[j - num] + 1
+        ans = dp[-1]
+        return ans if ans != -inf else -1
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{494. 目标和}\link{https://leetcode.cn/problems/target-sum}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{怎么转换成“选与不选”经典问题呢？}
+    \begin{equation*}
+      dp(i,target)=dp(i-1,target)+dp(i-1,target-nums[i])
+    \end{equation*}
+  \end{alertblock}
+  \begin{itemize}
+    \item 如果$nums[0],nums[1],\dots,nums[-1]$这些数中，有一些数前面的符号是$+$，另一些数前面的符号一定是$-$。
+    \item 我们记$+$的这些数，和为$p$，这些带减号的，和为$q$。比如示例1：$nums=[1,1,1,1,1],target=3$，一种方案是$-1+1+1+1+1=3$
+    \item 那么，我们的$q=1$，$p=4$。那么$p+q=sum(nums)$，$p-q=target$。那么我们就有了$p=(sum(nums)+target)/2$。如果我们没有$nums$可选，$p=0$的时候什么都没有也是一个方案，$dp(0,0)=1$
+    \item 那么我们的问题就变成了：在$nums$中选出一些数，使得他们的和为$p$。方案有多少呢？这就是一个经典的对于$nums[i]$，\textbf{选与不选}的\textbf{背包}问题了。
+    \item 对于每一个$nums[i]$，我们有选与不选两种选择。也就是上面公式的两项了
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        s = sum(nums)
+        if (s + target) < 0 or (s + target) % 2:
+            return 0
+        target = (s + target) // 2
+        @cache
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 1 if target == 0 else 0
+            return dfs(i - 1, target) + dfs(i - 1, target - nums[i])
+        return dfs(len(nums) - 1, target)
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{1：1翻译成优化一个维度的递推}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        s = sum(nums)
+        if (s + target) < 0 or (s + target) % 2:
+            return 0
+        target = (s + target) // 2
+        dp = [1] + [0] * target
+        for num in nums:
+            for j in range(target, num - 1, -1):
+                dp[j] += dp[j - num]
+        return dp[-1]
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{因为$dp[i+1][j]$是从$dp[i][j]$推导出来的，我们优化掉$i$这个维度}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        dp = [0] + [-inf] * target
+        for num in nums:
+            for j in range(target, num - 1, -1):
+                if dp[j - num] + 1 > dp[j]:
+                    dp[j] = dp[j - num] + 1
+        ans = dp[-1]
+        return ans if ans != -inf else -1
+  \end{codeblock}
 \end{frame}
 
 \begin{frame}[fragile]{文件结构}
@@ -217,7 +485,7 @@ V = \frac{4}{3}\pi r^3
     \end{column}
 
     \begin{column}{.5\textwidth}
-      $V = \frac{4}{3}\pi r^3$
+      $f[i][j]=\min\limits_{s \subseteq j}\max(f[i-1][j\setminus s],sum[s])$
 
       \[
         V = \frac{4}{3}\pi r^3

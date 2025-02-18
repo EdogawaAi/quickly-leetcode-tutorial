@@ -31,6 +31,22 @@
 \usepackage{hyperxmp}
 \usepackage{booktabs}
 \usepackage{listings}
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  commentstyle=\color{gray},
+  breaklines=true,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=5pt,
+  frame=single,
+  tabsize=2,
+  captionpos=b
+}
 \usepackage{tipa}
 \usepackage{multicol}
 \usepackage{datetime2}
@@ -117,16 +133,16 @@
   breaklines,%
 }
 
-\author{Alexara Wu}
-\institute[SJTUG]{上海交通大学 Linux 用户组}
+\author{\href{https://github.com/EdogawaAi}{Hoshino Cola}}
+\institute[SJTU-SE]{上海交通大学 Linux 用户组}
 \date{\the\year 年 \the\month 月}
 \subject{上海交通大学图书馆专题培训讲座}
 \keywords{LaTeX, 论文排版, SJTUThesis}
 
-\title[\SJTUBeamer 示例文档] % 页脚显示标题
-{\textbf{如何使用 \LaTeX{} 排版论文}} % 首页标题
+\title[一个专门给软件工程学生准备的Leetcode速通指南] % 页脚显示标题
+{\textbf{软工人如何训练Leetcode}} % 首页标题
 
-\subtitle{\SJTUBeamer 示例文档}
+\subtitle{一个专门给软件工程学生准备的Leetcode速通指南}
 
 \begin{document}
 
@@ -153,31 +169,27 @@
 \maketitle
 
 \begin{frame}
-  \frametitle{来源}
+  \frametitle{公开资料}
   \begin{thebibliography}{00}
     \setbeamertemplate{bibliography item}[online]
-    \bibitem{} Alexara Wu.
-    \newblock 如何使用 \LaTeX{} 排版论文[EB/OL].
-    \newblock 2021.
-    \url{https://github.com/sjtug/sjtulib-latex-talk/tree/alexara-2021}
+    \bibitem{} 
+    \newblock 如果你需要提高，建议按照灵神题单针对训练，并安装油猴脚本\link{https://github.com/zhang-wangz/LeetCodeRating}
+    \newblock 2025.
+    \url{https://leetcode.cn/u/endlesscheng/}
   \end{thebibliography}
 
   \vspace*{2ex}
 
   \begin{itemize}
-    \item 本示例文档的源码结构适用于简短的单次报告，仅展示 \beamer{} 文档类的通
-          用功能，更多地在使用 \SJTUBeamer{} 的样式信息。
-    \item 为发挥 \SJTUBeamer{} 的全部功能，参见发布区
-          \link{https://github.com/sjtug/SJTUBeamer/releases} 的快速入门、用户手
-          册与开发文档。
-    \item 就制作一组讲座而言，相关源码结构可以参考新讲座
-          \link{https://github.com/sjtug/sjtulib-latex-talk/tree/logcreative-2022}。
-          新讲座使用了社区版主题的同时也展示了 \SJTUBeamer{} 的特殊用法。
+    \item \textsc{HOT100}和\textsc{TOP150}两大题单建议熟练记忆，做到滚动复习，确保100\%会做
+    \item 编程语言因人而异，但是在动态规划的题目中，我建议使用 \faPython 的方式实现，较为简洁。
+          如果你是 \faCuttlefish 的忠诚爱好者，那么可以参考一下代码随想录 \link{https://programmercarl.com/} 的一些题解，虽然题量不大但是讲解较为清楚
+    \item leetcode的环境较为完善，所以需要自己学会在\textsc{ACM模式}下训练，比如知道常见的库怎么导入，比如 \lstinline{from typing import List}，强烈不建议使用\textsc{IDE}刷题，学会自己\lstinline{print}，\lstinline{cout}调试。
   \end{itemize}
 
 \end{frame}
 
-\begin{frame}{目录}
+\begin{frame}{算法分类讲解}
   \tableofcontents[hideallsubsections]	% 隐藏所有小节信息
 \end{frame}
 
