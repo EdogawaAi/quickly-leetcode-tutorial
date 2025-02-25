@@ -143,12 +143,10 @@ public:
 详细展示见 [样式一览](https://github.com/sjtug/SJTUBeamer/discussions/138)。
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/61653082/160813366-5c7bd98b-dc3c-43ac-9cf4-1cb375228470.jpg">
   <img alt="Red Cover" src="./figures/pic1.png">
 </picture>
     
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/61653082/160813414-9b43c4b3-4e6d-4f51-9c63-ff7a87eafcf7.jpg">
   <img alt="Blue Cover" src="./figures/pic2.png">
 </picture>
 
