@@ -1,133 +1,88 @@
-# SJTUBeamer 🤓
+# Quickly-Leetcode-Tutorial 🤓
 
 [![TeXPage](https://img.shields.io/badge/SJTUBeamer-TeXPage-495A80)](https://www.texpage.com/template/c0decdfd-ca66-4f4a-807d-5217f729dcfa)
 [![Overleaf](https://img.shields.io/badge/SJTUBeamer-Overleaf-098842)](https://www.overleaf.com/latex/templates/sjtubeamer/dgvrnpndrtjh)
 [![discussions](https://img.shields.io/github/discussions/sjtug/SJTUBeamer)](https://github.com/sjtug/SJTUBeamer/discussions)
 [![Build](https://github.com/sjtug/SJTUBeamer/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/sjtug/SJTUBeamer/actions/workflows/build.yml)
 
-欢迎使用 SJTUBeamer! 🥳
-
-SJTUBeamer 是上海交通大学的非官方 Beamer 模版。您可以使用 SJTUBeamer 制作幻灯片，展示您的成果。
-
-这个仓库中包含 SJTUBeamer 所使用的宏包 `sjtubeamer`，以及一个示例文档。
+这个模板是我在SJTUBeamer的基础上改的，感谢 [@SJTUG](https://github.com/SJTUG) 🥳
 
 ## 快速上手 👋
-
-目前的 `main.tex` 是一个示例文档《如何使用 LaTeX 排版论文》。您可以将里面的内容替换掉。下面是一个最简示例：
+#### 写在前面
+1. 为什么我即使受过软件学院的系统训练~~毒打~~，依旧选择`python3`而不是`c++`作为我的leetcode刷题主要语言呢？
+    - 因为我曾经遇到了一段刷题瓶颈期，无论我怎么刷题也无法突破，这让我极度苦恼。我尝试寻求突破，正好我看到了[灵茶山艾府](https://github.com/EndlessCheng)的题单，他的题单质量很高而且他的题解很多都用`python`写的，我尝试跟着他的题单题解刷题，我也觉得用`python3`刷题比用`c++`刷题更适合leetcode
+2. 我为什么依然要更新这个题解，即使leetcode有众多先人的资料？
+    - 因为我根据我身边的观察发现，说实在话软件学院的学生很多算法题写的很一般而且偏弱。抛开软院课程压力大让很多人没业余时间刷题这个因素，我也觉得我需要做一份资料最大限度整合资源让大家能过快速上手刷题，根据一类知识点稳过一类题，尽量减少大家踩坑的时间。*而且灵神也有很多题解是上古时期的(bushi)或者没有题解*，这就可以让我来整理一下题解了
+3. 我的一些代码展示。Talk is cheap, show me your code。我自己的感觉是不要畏惧对一个语言的语法不熟，语法不熟可以看别人~~比如我~~写的，或者问chatgpt🤖很容易上手的。实测只需要跟着gpt和灵神的题解半个月就能熟练用`python3`刷题了
 
 <details>
 
-<summary>点击展开代码片段</summary>
+<summary>如果0-1背包我用python3写</summary>
 
-```latex
-\documentclass[
-    % draft,          % 草稿模式
-    aspectratio=169,  % 使用 16:9 比例
-]{ctexbeamer}
-\mode<presentation>
-
-\usetheme[min]{sjtubeamer}
-% 使用 maxplus/max/min 切换标题页样式
-% 使用 red/blue 切换主色调
-% 使用 light/dark 切换亮/暗色模式
-% 使用外样式关键词以获得不同的边栏样式
-%   miniframes infolines  sidebar 
-%   default    smoothbars split	 
-%   shadow     tree       smoothtree
-% 使用 topright/bottomright 切换徽标位置
-% 使用逗号分隔列表以同时使用多种选项
-
-% \tikzexternalize[prefix=build/]
-% 如果您需要缓存 tikz 图像，请取消注释上一行，并在编译选项中添加 -shell-escape。
-
-\usepackage[backend=biber,style=gb7714-2015]{biblatex}
-\addbibresource{thesis.bib}
-
-\institute[SJTUG]{上海交通大学 Linux 用户组} % 组织
-
-\title{SJTUBeamer 幻灯片模板}         % 标题
-\subtitle{SJTUBeamer Template}       % 副标题
-\author{SJTUG}                       % 作者
-\date{\today}                        % 日期  
-
-\begin{document}
-
-\maketitle                           % 创建标题页
-
-\part{第一部分}
-
-% 使用节目录
-\AtBeginSection[]{
-  \begin{frame}
-    % \tableofcontents[currentsection,hideallsubsections]  % 传统节目录             
-    \sectionpage                        % 节页
-  \end{frame}
-}
-
-\section{第 1 节}
-
-\begin{frame}
-  \frametitle{标题}
-  \paragraph{列表} 这个\alert{幻灯片}有下面几项：
-  \begin{itemize}
-    \item 第 1 项
-    \item 第 2 项
-    \item 第 3 项
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{标题}
-  \framesubtitle{子标题}
-  \begin{equation}
-    x^2+2x+1=(x+1)^2
-  \end{equation}
-\end{frame}
-
-\section{第 2 节}
-\begin{frame}
-  \frametitle{一些盒子}
-  \begin{block}{盒子}
-    这是一个盒子\cite{thelegendofjiang}
-  \end{block}
-  \begin{alertblock}{注意}
-    注意内容
-  \end{alertblock}
-  \begin{exampleblock}{示例}
-    示例内容
-  \end{exampleblock}
-\end{frame}
-
-\begin{frame}[fragile]          % 注意添加 fragile 标记
-  \frametitle{代码块}
-  % 代码块参数：语言，标题
-  % 请减少代码初始的缩进
-  \begin{codeblock}[language=c++]{C++代码}
-#include<iostream>
-
-int main(){
-  // Console Output
-  std::cout << "Hello, SJTU!" << std::endl;
-  return 0;
-}
-  \end{codeblock}
-\end{frame}
-
-\part{参考文献}
-\begin{frame}[allowframebreaks]
-  \printbibliography[heading=none]
-\end{frame}
-
-\makebottom       % 创建结束页
-
-\end{document}
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        @cache
+        def dfs(i: int, target: int) -> bool:
+            if i < 0:
+                return True if target == 0 else False
+            ans = dfs(i - 1, target)
+            if target >= nums[i]:
+                ans = ans | dfs(i - 1, target - nums[i])
+            return ans
+        s = sum(nums)
+        if s & 1 == 1:
+            return False
+        
+        ans = dfs(len(nums) - 1, s // 2)
+        dfs.cache_clear()
+        return ans
 ```
 
 </details>
 
+<details>
+
+<summary>但是这是我以前用C++写的代码</summary>
+
+```cpp
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum % 2 != target % 2) {
+            return 0;
+        }
+        int W = (sum + target) / 2;
+        if (W < 0) {
+            return 0;
+        }
+        int n = nums.size();
+        vector<vector<int>> dp(W + 1, vector<int>(n + 1));
+        dp[0][0] = 1;
+        for (int j = 1; j <= n; j++) {
+            for (int w = 0; w <= W; w++) {
+                dp[w][j] = dp[w][j - 1];
+                if (w >= nums[j - 1]) {
+                    dp[w][j] += dp[w - nums[j - 1]][j - 1];
+                }
+            }
+        }
+        return dp[W][n];
+    }
+};
+```
+
+</details>
+
+
+
 ## 使用方法 🧰
 
-普通用户只需编辑 `main.tex` 即可开始使用。
+我这里已经用超链接/链接将所有的资料/题目都放在pdf里了，开箱即用。如果你也想编辑pdf帮我贡献的话，那么下面就是SJTUBeamer的使用方式了
 
 ### 模版下载与编译
 
@@ -189,12 +144,12 @@ int main(){
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/61653082/160813366-5c7bd98b-dc3c-43ac-9cf4-1cb375228470.jpg">
-  <img alt="Red Cover" src="https://user-images.githubusercontent.com/61653082/160813386-8cb98131-0cae-456b-af1e-cec671e5fc8e.jpg">
+  <img alt="Red Cover" src="./figures/pic1.png">
 </picture>
     
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/61653082/160813414-9b43c4b3-4e6d-4f51-9c63-ff7a87eafcf7.jpg">
-  <img alt="Blue Cover" src="https://user-images.githubusercontent.com/61653082/160813430-1c7647d4-6346-4fd8-b43f-e156b6234b0e.jpg">
+  <img alt="Blue Cover" src="./figures/pic2.png">
 </picture>
 
 ## 许可证

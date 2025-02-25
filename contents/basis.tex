@@ -244,7 +244,7 @@ class Solution:
   \frametitle{因为$dp[i+1][j]$是从$dp[i][j]$推导出来的，我们优化掉$i$这个维度}
   % 代码块参数：语言，标题
   % 请减少代码初始的缩进
-  \begin{codeblock}[language=python]{}
+  \begin{codeblock}[language=python]{在有些题可以结合数据结构比如线段树来优化$DP$}
 class Solution:
     def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
         n = len(nums)
@@ -301,10 +301,10 @@ class Solution:
 
 
 \begin{frame}[fragile]          % 注意添加 fragile 标记
-  \frametitle{1：1翻译成优化一个维度的递推}
+  \frametitle{$dp[i][j]=dp[i-1][j]+dp[i-1][j-nums[i]]$}
   % 代码块参数：语言，标题
   % 请减少代码初始的缩进
-  \begin{codeblock}[language=python]{}
+  \begin{codeblock}[language=python]{1：1翻译成优化一个维度的递推}
 class Solution:
     def findTargetSumWays(self, nums: List[int], target: int) -> int:
         s = sum(nums)
@@ -321,87 +321,845 @@ class Solution:
 
 
 \begin{frame}[fragile]          % 注意添加 fragile 标记
-  \frametitle{因为$dp[i+1][j]$是从$dp[i][j]$推导出来的，我们优化掉$i$这个维度}
+  \frametitle{\textsc{2518. 好分区的数目}\link{https://leetcode.cn/problems/number-of-great-partitions/description}}
   % 代码块参数：语言，标题
   % 请减少代码初始的缩进
-  \begin{codeblock}[language=python]{}
-class Solution:
-    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
-        n = len(nums)
-        dp = [0] + [-inf] * target
-        for num in nums:
-            for j in range(target, num - 1, -1):
-                if dp[j - num] + 1 > dp[j]:
-                    dp[j] = dp[j - num] + 1
-        ans = dp[-1]
-        return ans if ans != -inf else -1
-  \end{codeblock}
-\end{frame}
-
-\begin{frame}[fragile]{文件结构}
-  \lstset{language=[LaTeX]TeX}
-  \begin{lstlisting}[basicstyle=\ttfamily]
-\documentclass[a4paper]{ctexart}
-% 文档类型，如 ctexart，[]内是选项，如 a4paper
-% 这里开始是导言区
-\usepackage{graphicx} % 引用宏包
-\graphicspath{{fig/}} % 设置图片目录
-% 导言区到此为止
-\begin{document}
-这里开始是正文
-\end{document}
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{\LaTeX{}“命令”}
-  \framesubtitle{宏 (Macro)、或者控制序列 (control sequence)}
+  \begin{alertblock}{跟上面这道题其实是一道题，关键在于怎么优化}
+    \begin{equation*}
+      dp(i,target)=dp(i-1,target)+dp(i-1,target-nums[i])
+    \end{equation*}
+  \end{alertblock}
   \begin{itemize}
-    \item 简单命令
-          \begin{itemize}
-            \item \verb|\命令|\hspace{2em}
-                  \verb|{\songti 中国人民解放军}| ~$\Rightarrow$ {\songti 中国人民解放军}
-            \item \verb|\命令[可选参数]{必选参数}|\\
-                  \verb|\section[精简标题]{这个题目实在太长了放到目录里面不太好看}|\\
-                  $\Rightarrow$ {\heiti 1.1 \hspace{1em} \songti
-                      这个题目实在太长了放到目录里面不太好看}
-          \end{itemize}
-    \item 环境
-          \begin{columns}[c]
-            \begin{column}{0.45\textwidth}
-              \begin{lstlisting}[basicstyle=\ttfamily]
-\begin{equation*}
-  a^2-b^2=(a+b)(a-b)
-\end{equation*}
-              \end{lstlisting}
-            \end{column}\hspace{1em}
-            \begin{column}{0.45\textwidth}
-              $ a^2-b^2=(a+b)(a-b)$
-            \end{column}
-          \end{columns}
+    \item 如果我们在$nums$中选出了一些数，和为$target$，那么剩下的部分和一定是$sum(nums)-target$。我们希望这两个和都$\geq k$
+    \item 显然如果是好分区，那么$k \leq target \leq sum(nums)-k$。对于每一个$target$，我们都能用前面的思想求出来方案数，一加就可以了。是不是很简单呢？
+    \item 直接上手撕代码吧！
+    % \item 对于每一个$nums[i]$，我们有选与不选两种选择。也就是上面公式的两项了
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{\LaTeX{} 常用命令}
-  \begin{block}{简单命令}
-    \centering
-    \footnotesize
-    \begin{tabular}{llll}
-      \cmd{chapter}   & \cmd{section} & \cmd{subsection} & \cmd{paragraph}
-      \\
-      章               & 节             & 小节               & 带题头段落
-      \\\hline
-      \cmd{centering} & \cmd{emph}    & \cmd{verb}       & \cmd{url}
-      \\
-      居中对齐            & 强调            & 原样输出             & 超链接             \\\hline
-      \cmd{footnote}  & \cmd{item}    & \cmd{caption}    &
-      \cmd{includegraphics}                                                \\
-      脚注              & 列表条目          & 标题               & 插入图片            \\\hline
-      \cmd{label}     & \cmd{cite}    & \cmd{ref}
-      \\
-      标号              & 引用参考文献        & 引用图表公式等                            \\\hline
-    \end{tabular}
-  \end{block}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def countPartitions(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        s = sum(nums)
+        MOD = 10**9 + 7
+        if not (s >= 2 * k):
+            return 0
+        @cache
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 1 if target == 0 else 0
+            return (dfs(i - 1, target) + dfs(i - 1, target - nums[i])) % MOD
+        return sum(dfs(n - 1, target) for target in range(k, s - k + 1)) % MOD
+  \end{codeblock}
 \end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{这道题精彩的地方来了，怎么优化呢？我们前面这么写必爆空间}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{itemize}
+  \item 所以我们就反向思考，坏分区的话，两个分区的$sum$，一定有一个$< k$，就是$\leq k-1$。轮换对称我们求出坏分区的数量，拿组合总数$2^n$减去坏分区即可。
+  \item 怎么求坏分区的数目呢？是不是我们的$target<k\implies target=0,1,\dots,k-1$的各个方案数求和呢？
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{1：1翻译成优化一个维度的递推}
+class Solution:
+    def countPartitions(self, nums: List[int], k: int) -> int:
+        n, s = len(nums), sum(nums)
+        MOD = 10**9 + 7
+        if not (s >= 2 * k):
+            return 0
+        dp = [0] * (k - 1 + 1)
+        dp[0] = 1
+        for num in nums:
+            for j in range(k - 1, num - 1, -1):
+                dp[j] = (dp[j] + dp[j - num]) % MOD
+        return (pow(2, n, MOD) - sum(dp) * 2) % MOD
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{2787. 将一个数字表示成幂的和的方案数}\link{https://leetcode.cn/problems/ways-to-express-an-integer-as-sum-of-powers/}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{跟上面这道题其实是一道题，关键在于怎么优化}
+    \begin{equation*}
+      dp(i,target)=dp(i-1,target)+dp(i-1,target-knaps[i])
+    \end{equation*}
+  \end{alertblock}
+  \begin{itemize}
+    \item 既然每一个$i^x$只能用一次
+    \item 每一个数字都有\textbf{选与不选}两种选择，我们把$i^x$放到$knaps$里
+    \item 我们自然可以把它看作是0-1背包的问题，也就是$dp(i,target)$表示前$i$个$knaps$的元素，\textbf{最多选一次}和为$target$的方案数
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def numberOfWays(self, n: int, x: int) -> int:
+        knaps = [i ** x for i in range(1, n + 1) if i ** x <= n]
+        MOD = 10**9 + 7
+        @cache
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 1 if target == 0 else 0
+            ans = dfs(i - 1, target)
+            if target >= knaps[i]:
+                ans = (ans + dfs(i - 1, target - knaps[i])) % MOD
+            return ans
+        ans = dfs(len(knaps) - 1, n)
+        dfs.cache_clear()
+        return ans
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{1：1翻译成优化一个维度的递推}
+class Solution:
+    def numberOfWays(self, n: int, x: int) -> int:
+        knaps = [i ** x for i in range(1, n + 1) if i ** x <= n]
+        MOD = 10**9 + 7
+        dp = [1] + [0] * n
+        for num in knaps:
+            for j in range(n, num - 1, -1):
+                dp[j] = (dp[j] + dp[j - num]) % MOD
+        return dp[-1]
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{3180. 执行操作可获得的最大总奖励 I}\link{https://leetcode.cn/problems/maximum-total-reward-using-operations-i}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{已经没必要说了。。。我直接写一下状态转移方程吧，\textsc{bitwise}优化留作思考\sout{主要是我自己也不太会}}
+    \begin{equation*}
+      dp(i,target)=dp(i-1,target)+dp(i-1,target-rewardValues[i])
+    \end{equation*}
+  \end{alertblock}
+  \begin{itemize}
+    \item 根据题目要求，如果我们想取这个$rewardValues[i]$，那么我们的$target$一定是$rewardValues[i] \leq target < 2 * rewardValues[i]$
+    \item 因为你取了这个，前面的容量就是$target - rewardValues[i]$，那么$target - rewardValues[i] < rewardValues[i-1] <= rewardValues[i]$，得到了这个范围。
+    \item 没什么好说的了，直接上代码吧
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        n = len(rewardValues)
+        rewardValues.sort()
+        @cache
+        def dfs(i: int, j: int) -> bool:
+            if i < 0:
+                return j == 0
+            ans = dfs(i - 1, j)
+            if rewardValues[i] <= j < 2 * rewardValues[i]:
+                ans |= dfs(i - 1, j - rewardValues[i])
+            return ans
+        for j in range(2 * rewardValues[-1] - 1, -1, -1):
+            ans = dfs(n - 1, j)
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{}
+            if ans:
+              return j
+            dfs.cache_clear()
+        return 0
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{1：1翻译成优化一个维度的递推}
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        n = len(rewardValues)
+        rewardValues.sort()
+        max_target = 2 * rewardValues[-1] - 1
+        dp = [0] * (max_target + 1)
+        dp[0] = 1
+        for reward in rewardValues:
+            for j in range(max_target, reward - 1, -1):
+                if reward <= j < 2 * reward:
+                    dp[j] += dp[j - reward]
+        for j in range(max_target, -1, -1):
+            if dp[j] > 0:
+                return j
+        return 0
+  \end{codeblock}
+\end{frame}
+
+% \begin{frame}{\TeX{}排版举例：公式}
+%   \begin{alertblock}{无编号公式}
+%     \begin{equation*}
+%       \mathcal{F}(\xi)=\int_{-\infty}^{\infty} f(x)\mathrm{e}^{-\mathrm{j}2\pi
+%       \xi x}\,\mathrm{d}x
+%     \end{equation*}
+%   \end{alertblock}
+%   \begin{alertblock}{多行多列公式}
+%     % Taken from Mathmode.tex
+%     \begin{align}
+%       y      & =d                  & z & =1                  \\
+%       y      & =cx+d               & z & =x+1                \\
+%       y_{12} & =bx^{2}+cx+d        & z & =x^{2}+x+1\nonumber \\
+%       y(x)   & =ax^{3}+bx^{2}+cx+d & z & =x^{3}+x^{2}+x+1
+%     \end{align}
+%   \end{alertblock}
+% \end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{474. 一和零}\link{https://leetcode.cn/problems/ones-and-zeroes}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{状态转移方程，注意是二维的\textsc{target}}
+    \begin{align}
+      & dp(i,target 0,target 1)=\\ & \begin{cases}
+      dp(i-1,target 0, target 1)(not \text{ }strs[i]) \\
+      dp(i-1,target 0-strs[i].count(0),target 1-strs[i].count(1))+1(yes \text{ }strs[i])
+      \end{cases}
+      \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 之前我们的限制就是满足了一个$target$，这次我们要同时满足$cnt0$和$cnt1$的约束
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
+        @cache
+        def dfs(i: int, zero: int, one: int) -> int:
+            if i < 0:
+                return 0 if zero >= 0 and one >= 0 else -inf
+            ans = dfs(i - 1, zero, one)
+            if zero >= strs[i].count('0') and one >= strs[i].count('1'):
+                ans = max(ans, dfs(i - 1, zero - strs[i].count('0'), one - strs[i].count('1')) + 1)
+            return ans
+        return dfs(len(strs) - 1, m, n)
+  \end{codeblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{codeblock}[language=python]{1：1翻译成优化掉一个维度的递推}
+class Solution:
+    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for s in strs:
+            cnt0, cnt1 = s.count('0'), s.count('1')
+            for i in range(m, cnt0 - 1, -1):
+                for j in range(n, cnt1 - 1, -1):
+                    dp[i][j] = max(dp[i][j], dp[i - cnt0][j - cnt1] + 1)
+        return dp[m][n]
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{1049. 最后一块石头的重量 II}\link{https://leetcode.cn/problems/last-stone-weight-ii}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{为什么是一个背包问题呢？}
+    \begin{equation*}
+      dp(i, sum(s) / 2)=\max(dp(i-1,sum(s) / 2),dp(i-1,sum(s) / 2 - s[i]) + s[i])
+    \end{equation*}
+  \end{alertblock}
+  \begin{itemize}
+    \item 为什么是0-1背包呢？
+      \begin{itemize}
+        \item 如果我们拿出了总重量为$target$的石子，那么另一部分重量和一定是$sum(stones)-target$
+        \item 我们把这两份石头一起撞，那么最后剩下的重量一定是$abs(sum(stones) - 2 \times target)$。我们不妨假定$target \leq sum(stones) / 2$
+        \item 那么，我们可以这么思考：在限制为$sum(stones)/2$下，怎么拿一些石头，让这些石头的重量和$target$最大呢？这就是一个背包问题了
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def lastStoneWeightII(self, stones: List[int]) -> int:
+        @cache
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 0 if target >= 0 else -inf
+            ans = dfs(i - 1, target)
+            if target >= stones[i]:
+                ans = max(ans, dfs(i - 1, target - stones[i]) + stones[i])
+            return ans
+        max_weight = dfs(len(stones) - 1, sum(stones) // 2)
+        return sum(stones) - 2 * max_weight
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{1：1翻译成优化掉一个维度的递推}
+  \begin{codeblock}[language=python]{1：1翻译成递推}
+class Solution:
+    def lastStoneWeightII(self, stones: List[int]) -> int:
+        s = sum(stones)
+        dp = [0] * (s // 2 + 1)
+        for stone in stones:
+            for j in range(s // 2, stone - 1, -1):
+                dp[j] = max(dp[j], dp[j - stone] + stone)
+        return s - 2 * dp[-1]
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{1774. 最接近目标价格的甜点成本}\link{https://leetcode.cn/problems/closest-dessert-cost}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{选两个也是0-2背包了(\textsc{bushi})}
+    \begin{align}
+      & dp(i,cur\_cost) \\
+      & = closest(dp(i-1,cur\_cost),dp(i-1,cur\_cost+c[i]),dp(i-1,cur\_cost+2 \times c[i]))
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 这里就体现出用记忆化搜索的好处了。
+    \begin{itemize}
+      \item 用$dp(i,cur\_cost)$表示选到$i$个甜品，而且当前成本$cur\_cost$最接近目标的成本
+      \item 显然，不选这个甜品就是$dp(i-1,cur\_cost)$
+      \item 选了一个就是$dp(i-1,cur\_cost+toppingCosts[i])$
+      \item 选了两个就是$dp(i-1,cur\_cost+2 \times toppingCosts[i])$
+    \end{itemize}
+    \item 最后比较一下哪个离target更近
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{就用最方便的记忆化搜索吧}
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+class Solution:
+    def closestCost(self, baseCosts: List[int], toppingCosts: List[int], target: int) -> int:
+        n = len(toppingCosts)
+        def closer(a: int, b: int) -> int:
+            return a if abs(a - target) < abs(b - target) or abs(a - target) == abs(b - target) and a < b else b
+        
+        @cache
+        def dfs(i: int, cur_cost: int) -> int:
+            if i < 0:
+                return cur_cost
+            not_choose = dfs(i - 1, cur_cost)
+            choose1 = dfs(i - 1, cur_cost + toppingCosts[i])
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  \begin{codeblock}[language=python]{记忆化搜索版本的代码}
+            choose2 = dfs(i - 1, cur_cost + 2 * toppingCosts[i])
+            
+          return closer(closer(choose1, choose2), not_choose)
+
+        ans = inf
+        for base in baseCosts:
+          cur_cost = dfs(n - 1, base)
+          ans = closer(ans, cur_cost)
+        return ans
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{879. 盈利计划}\link{https://leetcode.cn/problems/profitable-schemes}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{alertblock}{dp递推思想其实很简单的}
+    \begin{align}
+      &dp(i,remaining, curProfit)\\
+      =&dp(i-1,remaining,curProfit)\\
+      +&dp(i-1,remaining-group[i],curProfit+profit[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 题目的条件有$n$和$minProfit$两大约束，那么我们可以通通放到$dp$的参数里
+    \item 那么我们就可以定义$dp(i,remaining,curProfit)$来表示：
+          \begin{itemize}
+            \item 选到第$i$个的时候
+            \item 我们剩余$remaining$多少人可以选
+            \item 我们当前$curProfit$用了多少利润
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \begin{itemize}
+    \item 我们依然对于一个$i$有选与不选两种选择：不选$i$肯定是$dp(i-1,remaining,curProfit)$，选$i$那么我们剩余的人减少了$group[i]$，当前的利润增加了$profit[i]$，那么就一定是$dp(i-1, remaining-group[i], curProfit+profit[i])$
+    \item 怎么处理边界条件呢？与往常一样我们思想没有东西选能怎么样
+    \begin{itemize}
+      \item 如果我们此时剩余的人多$remaining\geq 0$，那么肯定是\textbf{一个合法}的方案
+      \item 如果我们此时的利润$minProfit$还大于等于最小利润$curProfit$，那么也是\textbf{一个合法}的方案
+      \item 那么，我们总结一下：\lstinline{if i < 0: return 1 if remaining >= 0 and minProfit >= curProfit else 0}
+    \end{itemize}
+    \item 把选与不选合起来，就是$dp(i,remaining,curProfit)=dp(i-1,remaining,curProfit)+dp(i-1,remaining-group[i],curProfit+profit[i])$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{这个记忆化搜索的代码在美区评测可以AC了}
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def profitableSchemes(self, n: int, minProfit: int, group: List[int], profit: List[int]) -> int:
+        MOD = 10**9 + 7
+        @cache
+        def dfs(i: int, remaining: int, curProfit: int) -> int:
+            if i < 0:
+                return 1 if remaining >= 0 and curProfit >= minProfit else 0
+            res = dfs(i - 1, remaining, curProfit)
+            if remaining >= group[i]:
+                res = (res + dfs(i - 1, remaining - group[i], curProfit + profit[i])) % MOD
+            return res
+        res = dfs(len(group) - 1, n, 0)
+        return res
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{956. 最高的广告牌}\link{https://leetcode.cn/problems/tallest-billboard/description}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{itemize}
+    \item 这题又为什么是选与不选的0-1背包问题呢？就用这道题结束0-1背包的讲解吧
+    \item 定义$dp(i,diff)$为到了第$i$个杆子，左减右高度差为$diff$的时候，左边杆子高度的最大值
+          \begin{itemize}
+            \item 选到第$i$个的时候
+            \item 我们如果不选这跟杆子：$dp(i,diff)=dp(i-1,diff)$
+            \item 选了这个杆子放在左边，那么左边的高度变高了，$diff$也变大了，$dp(i,diff)=dp(i-1,diff + rods[i])+rods[i]$
+            \item 放在右边，那么左边的高度不会变，但是$diff$变小了，$dp(i,diff)=dp(i-1,diff-rods[i])$
+          \end{itemize}
+    \item 合起来，就是$dp(i,diff)=max(dp(i-1,diff),dp(i-1,diff+rods[i])+rods[i],dp(i-1,diff-rods[i]))$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{直接上记忆化搜索吧}
+class Solution:
+    def tallestBillboard(self, rods: List[int]) -> int:
+        @cache
+        def dfs(i: int, diff: int) -> int:
+            if i < 0:
+                return 0 if diff == 0 else -inf
+            not_choose = dfs(i - 1, diff)
+            left, right = dfs(i - 1, diff + rods[i]) + rods[i], dfs(i - 1, diff - rods[i])
+            return max(not_choose, left, right)
+        return dfs(len(rods) - 1, 0)
+  \end{codeblock}
+\end{frame}
+
+
+\subsubsection{状态机\textsc{DP}}
+
+% \addcontentsline{toc}{subsubsection}{状态机\textsc{DP}}
+
+\begin{frame}[fragile]{状态机\textsc{DP}到底是什么呢？}
+  \begin{columns}[T]
+    \column{.8\textwidth}
+    \begin{itemize}
+      \item 用一个参数$j$来表示不同的\textbf{状态}，怎么用$dp(i-1,j')$来推导$dp(i,j)$，就是状态机\textsc{DP}的基本东西了
+            \begin{itemize}
+              \item 从买卖股票专题开始讲吧，从\href{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii}{122. 买卖股票的最佳时机 II}看看题目
+            \end{itemize}
+    \end{itemize}
+    \centering
+    \includegraphics[width=0.8\textwidth]{state.png}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{122. 买卖股票的最佳时机 II}\link{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{itemize}
+    \item 我们每走到一个$i$，都会有两种状态$state$：持有$hold$股票，不持有$not \text{ } hold$股票。这就是我们用$1$代表持有，$0$代表未持有的思想了
+    \item 到了$dp(i,1)$也就是第$i$时刻持有股票，有两种可能：
+          \begin{itemize}
+            \item 什么也不做，$dp(i,1)=dp(i-1,1)$
+            \item $not\text{ } hold \to hold$，也就是$dp(i,1)=dp(i-1,0)-prices[i]$，因为我们持有了，买入股票了，手上的钱少了$prices[i]$，自然是$-$
+            \item 合起来，就是$dp(i,1)=\max(dp(i-1,1),dp(i-1,0)-prices[i])$
+          \end{itemize}
+    \item 到了$dp(i,0)$也就是第$i$时刻\textbf{不}持有股票，有两种可能：
+          \begin{itemize}
+            \item 什么也不做，$dp(i,0)=dp(i-1,0)$
+            \item $hold \to not\text{ } hold$，也就是$dp(i,0)=dp(i-1,1)+prices[i]$，因为我们卖股票了，不持有了，手上的钱多了$prices[i]$，自然是$+$
+            \item 合起来，就是$dp(i,0)=\max(dp(i-1,0),dp(i-1,1)+prices[i])$
+          \end{itemize}
+    \item 最后一刻我们一定是希望手上股票全部卖出了，自然是对应了$not\text{ }hold$这个状态，\lstinline{return dp(n-1,0)}。特别的边界条件也就是我们什么股票都没得选\lstinline{if i < 0}，如果没股票选还$hold$，那么必然不合理，自然就是$-\infty$。不持有自然就是$0$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{上手写代码吧，状态机\textsc{DP}最好画画状态转移图明确}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        @cache
+        def dfs(i: int, hold: bool) -> int:
+            if i < 0:
+                return -inf if hold else 0
+            if hold:
+                return max(dfs(i - 1, False) - prices[i], dfs(i - 1, True))
+            else:
+                return max(dfs(i - 1, True) + prices[i], dfs(i - 1, False))
+        return dfs(n - 1, False)
+  \end{codeblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{1：1翻译成递推}
+  \begin{codeblock}[language=python]{1：1翻译成递推}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 2 for _ in range(n + 1)]
+        dp[0][1] = -inf
+        for i, p in enumerate(prices):
+            dp[i + 1][1] = max(dp[i][1], dp[i][0] - p)
+            dp[i + 1][0] = max(dp[i][0], dp[i][1] + p)
+        return dp[n][0]
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{1：1翻译成优化掉一个维度的递推}
+  \begin{codeblock}[language=python]{优化掉这个二维的空间成一维空间}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        dp0, dp1 = 0, -inf
+        for p in prices:
+            dp0, dp1 = max(dp0, dp1 + p), max(dp1, dp0 - p)
+        return dp0
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{123. 买卖股票的最佳时机 III}\link{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+    \begin{alertblock}{状态转移方程}
+    % Taken from Mathmode.tex
+    \begin{align}
+      &dp(i,0,remaining)=\max(dp(i-1,0,remaining),dp(i-1,1,remaining-1)+price[i])\\
+      &dp(i,1,remaining)=\max(dp(i-1,1,remaining),dp(i-1,0,remaining)-price[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 限制两次了，怎么思考呢？
+    \item 一开始我们加了一个$hold$这个维度，那么既然限制两次，我们就加一个剩余$remaining$多少次可以交易的维度。那么就是$dp(i,hold,remaining)$。既然买卖是让$remaining-1$，那么我们“卖”，也就是$hold \to not\text{ } hold\implies remaining-1$，相反的“买”就没必要$remaining-1$了
+    \item 边界条件：在前面的基础上，如果$remaining<0$，显然不合理，自然$-\infty$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{上手写记忆化搜索的代码吧}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        @cache
+        def dfs(i: int, hold: bool, remaining: int) -> int:
+            if remaining < 0:
+                return -inf
+            if i < 0:
+                return 0 if not hold else -inf
+            if hold:
+                return max(dfs(i - 1, True, remaining), dfs(i - 1, False, remaining) - prices[i])
+            else:
+                return max(dfs(i - 1, False, remaining), dfs(i - 1, True, remaining - 1) + prices[i])
+        return dfs(len(prices) - 1, False, 2)
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{1：1翻译成递推}
+  \begin{codeblock}[language=python]{1：1翻译成递推}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        k = 2
+        f = [[-inf] * 2 for _ in range(k + 2)]
+        for j in range(1, k + 2):
+            f[j][0] = 0
+        for p in prices:
+            for j in range(k + 1, 0, -1):
+                f[j][0] = max(f[j][0], f[j][1] + p)
+                f[j][1] = max(f[j][1], f[j - 1][0] - p)
+        return f[-1][0]
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{188. 买卖股票的最佳时机 IV}\link{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+    \begin{alertblock}{状态转移方程}
+    % Taken from Mathmode.tex
+    \begin{align}
+      &dp(i,0,remaining)=\max(dp(i-1,0,remaining),dp(i-1,1,remaining-1)+price[i])\\
+      &dp(i,1,remaining)=\max(dp(i-1,1,remaining),dp(i-1,0,remaining)-price[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 跟上一题其实是一样的，无非是上一题$k=2$，不说了
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{codeblock}[language=python]{ }
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        @cache
+        def dfs(i: int, hold: bool, remaining: int) -> int:
+            if remaining < 0:
+                return -inf
+            if i < 0:
+                return -inf if hold else 0
+            res = -inf
+            if hold:
+                res = max(dfs(i - 1, False, remaining) - prices[i], dfs(i - 1, True, remaining))
+            else:
+                res = max(dfs(i - 1, False, remaining), dfs(i - 1, True, remaining - 1) + prices[i])
+            return res
+        res = dfs(len(prices) - 1, False, k)
+        return res
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{309. 买卖股票的最佳时机含冷冻期}\link{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+    \begin{alertblock}{状态转移方程}
+    % Taken from Mathmode.tex
+    \begin{align}
+      &dp(i,0)=\max(dp(i-1,0),dp(i-1,1)+price[i])\\
+      &dp(i,1)=\max(dp(i-1,1),dp(i-2,0)-price[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 冷冻期的意思是，我们第$i$天想买入$not \text{ } hold \to hold$，那么我们不可以从$dp(i-1,0)\to dp(i,1)$，而是$dp(i-2,0)\to dp(i,1)$递推，也就是隔一天
+    \item 根据前面的推导，我们直接把$dp(i,1)=\max(dp(i-1,1),dp(i-1,0)-prices[i])$改成$dp(i,1)=\max(dp(i-1,1),dp(i-2,0)-prices[i])$就可以了
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{代码改起来相当容易}
+  \begin{codeblock}[language=python]{记忆化搜索的代码}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        @cache
+        def dfs(i: int, hold: bool) -> int:
+            if i < 0:
+                return 0 if not hold else -inf
+            if hold:
+                return max(dfs(i - 1, True), dfs(i - 2, False) - prices[i])
+            else:
+                return max(dfs(i - 1, False), dfs(i - 1, True) + prices[i])
+        return dfs(n - 1, False)
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{714. 买卖股票的最佳时机含手续费}\link{https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+    \begin{alertblock}{状态转移方程}
+    % Taken from Mathmode.tex
+    \begin{align}
+      &dp(i,0)=\max(dp(i-1,0),dp(i-1,1)+price[i]-fee)\\
+      &dp(i,1)=\max(dp(i-1,1),dp(i-1,0)-price[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 有手续费无非是我们每次交易，不妨定义买$\to$卖是一次完整的交易，那么$hold \to not \text{ } hold$是一次交易结束，此时扣手续费$-fee$
+    \item 那么无非就是把$dp(i-1,1)\to dp(i,0)$状态转移方程改改就行了。$dp(i,0)=\max(dp(i-1,0),dp(i-1,1)+price[i]-fee)$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{代码改起来也很容易}
+  \begin{codeblock}[language=python]{记忆化搜索的代码}
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        n = len(prices)
+        @cache
+        def dfs(i: int, hold: bool) -> int:
+            if i < 0:
+                return 0 if not hold else -inf
+            if hold:
+                return max(dfs(i - 1, True), dfs(i - 1, False) - prices[i])
+            else:
+                return max(dfs(i - 1, False), dfs(i - 1, True) + prices[i] - fee)
+        return dfs(n - 1, False)
+  \end{codeblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{至此我们的买卖股票的最佳时机专题已经讲完了}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  \begin{itemize}
+    \item 我们概括一下状态机\textsc{DP}的核心
+    \item 状态机\textsc{DP}的核心就是：$f[i][j]$表示前缀$a[:i]$在状态$j$下的最优值。$j$一般很小。这就是状态机\textsc{DP}怎么状态转移的
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{3259. 超级饮料的最大强化能量}\link{https://leetcode.cn/problems/maximum-energy-boost-from-two-drinks}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+    \begin{alertblock}{状态转移方程}
+    % Taken from Mathmode.tex
+    \begin{align}
+      &f(i,drinkA)=\max(f(i-1,drinkA),f(i-2,drinkB)+energyDrinkA[i])\\
+      &f(i,drinkB)=\max(f(i-1,drinkB),f(i-2,drinkA)+energyDrinkB[i])
+    \end{align}
+  \end{alertblock}
+  \begin{itemize}
+    \item 这道题就是买卖股票和打家劫舍的变式。我们两个状态：到了第$i$个我们要么买$A$饮料要么买$B$饮料。我们用$f(i,j)$表示到了第$i$个，买$j$饮料，能量的最大值
+    \item 如果我们想买$A$饮料获得能量最大，那么我们要么从$B$转向买$A$，要么不买，继承之前买的$A$获得的最大值。写成公式就是$f(i-1,drinkA)$，$f(i-2,drinkB)+energyDrinkA[i]$，因为我们也是要么买$A$，要么不买
+    \item 同样的道理，我们也可以写出第二个状态的转移方程
+    \item 边界条件我们什么都没买$i < 0$就必然获得$0$个能量了
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{就写一下记忆化搜索的代码吧，思路挺清晰的}
+  \begin{codeblock}[language=python]{}
+class Solution:
+    def maxEnergyBoost(self, energyDrinkA: List[int], energyDrinkB: List[int]) -> int:
+        n = len(energyDrinkA)
+        @cache
+        def dfs(i: int, drinkA: bool) -> int:
+            if i < 0:
+                return 0
+            if drinkA:
+                return max(dfs(i - 1, True), dfs(i - 2, False)) + energyDrinkA[i]
+            else:
+                return max(dfs(i - 1, False), dfs(i - 2, True)) + energyDrinkB[i]
+        return max(dfs(n - 1, True), dfs(n - 1, False))
+  \end{codeblock}
+\end{frame}
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{\textsc{2826. 将三个组排序}\link{https://leetcode.cn/problems/sorting-three-groups}}
+  % 代码块参数：语言，标题
+  % 请减少代码初始的缩进
+  %   \begin{alertblock}{}
+  %   % Taken from Mathmode.tex
+  %   \begin{align}
+  %     &dp(i,0)=\max(dp(i-1,0),dp(i-1,1)+price[i]-fee)\\
+  %     &dp(i,1)=\max(dp(i-1,1),dp(i-1,0)-price[i])
+  %   \end{align}
+  % \end{alertblock}
+  \begin{itemize}
+    \item 我们这么思考：删除了$nums$的一些数后，留下的一定是\textbf{非递减子序列}。那么我们记这个长度为$l$，那么我们删除的数一共有$len(nums)-l$，我们希望这个最小，那么一定是$l$最大
+    \item 问题就是求$nums$的\textbf{最长递增子序列长度}了，经典$LIS$问题。这个题无非要求\textbf{最长非递减子序列问题}而已
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{没学过\textsc{LIS}问题的xdm就看看我怎么写的吧}
+  \begin{codeblock}[language=python]{不需要按照李国强老师的\textsc{slides}写那个时间复杂度是$\mathcal{O}(n^2)$}
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        def LIS(nums: List[int]) -> int:
+            dp = []
+            for num in nums:
+                if not dp or num >= dp[-1]:
+                    dp.append(num)
+                else:
+                    i = bisect_right(dp, num)
+                    dp[i] = num
+            return len(dp)
+        return len(nums) - LIS(nums)
+  \end{codeblock}
+\end{frame}
+
+
+\begin{frame}[fragile]          % 注意添加 fragile 标记
+  \frametitle{这道题怎么用状态机\textsc{DP}来思考呢？}
+  \begin{itemize}
+    \item 我们这么想：我们记$f(i,j)$是到了$i$把$nums[0]\sim nums[i]$修改成\textbf{非递减子序列}的最小修改次数，而且此时以$j$结尾。毕竟$j$只可能取$1,2,3$
+    \item 那么我们有了$dp[i][j]=\min\limits_{1\leq k \leq j}(1+dp[i-1][j])\text{ } if\text{ }j \neq nums[i]$，我们改了嘛自然修改次数$+1$
+    \item $j == nums[i]$，那不用$+1$了毕竟不用修改
+    \item 合起来就是$dp[i][j]=\min\limits_{1\leq k \leq j}(dp[i-1][j])\text{ } + (j\neq nums[i])$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{写成优化一个维度的\textsc{DP}吧}
+  \begin{codeblock}[language=python]{1：1翻译成递推}
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        f = [0] * 4
+        for x in nums:
+            for j in range(3, 0, -1):
+                f[j] = min(f[k] for k in range(1, j + 1)) + (j != x)
+        return min(f[1:])
+  \end{codeblock}
+\end{frame}
+
+
 \begin{frame}[fragile]{\LaTeX{} 常用环境}
   \begin{block}{环境}
     \centering
